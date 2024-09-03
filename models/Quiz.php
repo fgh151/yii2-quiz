@@ -35,8 +35,6 @@ use yii\helpers\ArrayHelper;
  */
 class Quiz extends ActiveRecord
 {
-    use SoftDelete;
-
     public const SCENARIO_EVENT_REGISTRATION_FORM = 'event_registration_form';
 
     /**
