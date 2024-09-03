@@ -11,6 +11,7 @@ use yii\base\UnknownPropertyException;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
+use yii\web\IdentityInterface;
 
 /**
  * Модель хранения результатов заполнения формы опросника
@@ -22,7 +23,7 @@ use yii\helpers\ArrayHelper;
  * @property array  $result Массив заполненных вопросов
  *
  * @property Quiz $quiz Опросник
- * @property User $user Пользователь
+ * @property IdentityInterface $user Пользователь
  */
 class QuizResult extends ActiveRecord
 {
@@ -37,6 +38,7 @@ class QuizResult extends ActiveRecord
     }
 
     /**
+     * {@inheritdoc}
      * {@inheritdoc}
      */
     public function rules(): array
@@ -56,7 +58,7 @@ class QuizResult extends ActiveRecord
                 ['user_id'],
                 'exist',
                 'skipOnError' => true,
-                'targetClass' => User::class,
+                'targetClass' => \Yii::$app->getUser()->identityClass,
                 'targetAttribute' => ['user_id' => 'id'],
             ],
         ];
@@ -92,7 +94,7 @@ class QuizResult extends ActiveRecord
      */
     public function getUser(): ActiveQuery
     {
-        return $this->hasOne(User::class, ['id' => 'user_id']);
+        return $this->hasOne(\Yii::$app->getUser()->identityClass, ['id' => 'user_id']);
     }
 
     /**
