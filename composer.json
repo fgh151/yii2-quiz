@@ -1,0 +1,22 @@
+{
+    "name": "fgh151/yii2-quiz",
+    "description": "Provide quiz algorithms",
+    "type": "yii2-extension",
+    "keywords": ["yii2","extension"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Fedor B Gorsky",
+            "email": "fedor@support-pc.org"
+        }
+    ],
+    "require": {
+        "php": ">=7.0.0",
+        "yiisoft/yii2": "~2.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "fgh151\\quiz\\": ""
+        }
+    }
+}
