@@ -21,30 +21,11 @@ use yii\helpers\ArrayHelper;
  * @property int $id Идентификатор
  * @property string $title Название
  * @property DynamicModel $questions Модель опросника
- * @property string $description
- * @property string $text_after
- * @property string $date_end
- * @property string
- * @property bool $visible
- * @property int $deletion_time
- * @property string $deleted_by
- * @property string|null $external_quiz_link
- * @property string|null $results_link
  *
  * @property-read DynamicModel $form
  */
 class Quiz extends ActiveRecord
 {
-    public const SCENARIO_EVENT_REGISTRATION_FORM = 'event_registration_form';
-
-    /**
-     * Идентификаторы опросников по компетенциям
-     */
-    public const COMPETENCE_QUIZZES = [
-        67, 68, 70, 71, 72, 73, 74, 82, 83, 84, 85, /*86, 87, 88, */
-        89, 90, 91, 92, 93,
-    ];
-
     /**
      * Массив Вопросов
      *
@@ -70,33 +51,7 @@ class Quiz extends ActiveRecord
             ['title', 'string', 'max' => 255],
 
             ['questions', 'safe'],
-
-            ['description', 'string'],
-
-            ['text_after', 'string'],
-
-            ['date_end', 'required'],
-            ['date_end', 'date', 'format' => 'php:Y-m-d'],
-
-            ['visible', 'boolean'],
-
-            ['external_quiz_link', 'string', 'max' => 1000],
-            ['external_quiz_link', 'url', 'enableIDN' => true],
-
-            ['results_link', 'string', 'max' => 1000],
-            ['results_link', 'url', 'enableIDN' => true],
         ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function scenarios(): array
-    {
-        $scenarios = parent::scenarios();
-        $scenarios[self::SCENARIO_EVENT_REGISTRATION_FORM] = ['title', 'questions'];
-
-        return $scenarios;
     }
 
     /**
@@ -108,12 +63,6 @@ class Quiz extends ActiveRecord
             'id' => 'ID',
             'title' => 'Название',
             'questions' => 'Вопросы',
-            'description' => 'Описание',
-            'text_after' => 'Текст в случае успешного завершения',
-            'date_end' => 'Дата окончания приема голосов',
-            'visible' => 'Видимый',
-            'external_quiz_link' => 'Ссылка на внешний опрос',
-            'results_link' => 'Ссылка на результаты',
         ];
     }
 
@@ -141,47 +90,6 @@ class Quiz extends ActiveRecord
         $this->data = $this->questions;
         $this->questions = new DynamicModel();
         $this->questions->quiz_id = $this->id;
-
-        // Для формы регистрации на мероприятие добавляются чек-боксы согласия на обработку данных и фото
-        if ($this->scenario == self::SCENARIO_EVENT_REGISTRATION_FORM) {
-            $this->data[] = [
-                'type' => 'binaryCheckbox',
-                'field' => EventSettingsRegistrationForm::AGREEMENT_PERSONAL_DATA_FIELD_NAME,
-                'title' => '
-                    Согласен с условиями <a href="/agreement" target="_blank">пользовательского соглашения</a>.
-                ',
-                'validators' => [
-                    [
-                        'title' => 'required',
-                        'params' => [
-                            [
-                                'key' => 'message',
-                                'value' => 'Необходимо дать согласие на передачу персональных данных',
-                            ],
-                        ],
-                    ],
-                ],
-            ];
-
-            $this->data[] = [
-                'type' => 'binaryCheckbox',
-                'field' => EventSettingsRegistrationForm::AGREEMENT_PHOTO_FIELD_NAME,
-                'title' => '
-                    Согласен с политикой обработки персональных данных и Ознакомлен с политикой конфиденциальности.
-                ',
-                'validators' => [
-                    [
-                        'title' => 'required',
-                        'params' => [
-                            [
-                                'key' => 'message',
-                                'value' => 'Необходимо дать согласие на обработку персональных данных',
-                            ],
-                        ],
-                    ],
-                ],
-            ];
-        }
 
         if ($this->data) {
             foreach ($this->data as $questionData) {
