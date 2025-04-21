@@ -6,11 +6,8 @@
 
 namespace fgh151\quiz\models;
 
-use app\common\models\user\User;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use yii\base\Component;
+use yii\web\IdentityInterface;
 
 /**
  * Модель хранения результатов заполнения формы опросника
@@ -23,7 +20,7 @@ use yii\base\Component;
  *
  * @property Quiz $quiz Опросник
  * @property-read string $preparedAnswers
- * @property User $user Пользователь
+ * @property IdentityInterface $user Пользователь
  */
 class QuizResultMultiple extends Component
 {
@@ -72,42 +69,5 @@ class QuizResultMultiple extends Component
         }
 
         return $model;
-    }
-
-    /**
-     * Сохранить в файл
-     */
-    public function saveFile($fileName = __DIR__ . '/test.xlsx')
-    {
-        $spreadsheet = new Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet();
-        $this->addSheetHeader($sheet);
-        $rowIndex = 2;
-        foreach ($this->results as $userId => $row) {
-            $sheet->setCellValueByColumnAndRow(1, $rowIndex, $userId);
-            $colIndex = 2;
-
-            foreach ($this->fields as $field => $v) {
-                $sheet->setCellValueByColumnAndRow($colIndex, $rowIndex, $row[$field]);
-                $colIndex++;
-            }
-
-            $rowIndex++;
-        }
-
-        $writer = new Xlsx($spreadsheet);
-        $writer->save($fileName);
-    }
-
-    /**
-     * Добавить заголовок страницы
-     */
-    private function addSheetHeader(Worksheet $sheet)
-    {
-        $colIndex = 2;
-        foreach ($this->fields as $field) {
-            $sheet->setCellValueByColumnAndRow($colIndex, 1, $field);
-            $colIndex++;
-        }
     }
 }

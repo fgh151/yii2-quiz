@@ -6,7 +6,6 @@
 
 namespace fgh151\quiz\models;
 
-use app\common\models\user\User;
 use yii\base\UnknownPropertyException;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;

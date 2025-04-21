@@ -6,14 +6,10 @@
 
 namespace fgh151\quiz\models;
 
-use app\common\components\db\SoftDelete;
-use app\common\components\enums\UserGenderEnum;
-use app\common\components\helpers\Translit;
-use app\common\models\event\EventSettingsRegistrationForm;
-use app\common\models\user\User;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Inflector;
 
 /**
  * Модель хранит опросник
@@ -271,7 +267,7 @@ class Quiz extends ActiveRecord
 
                         if (false === empty($formQuestion['options'])) {
                             foreach (array_filter($formQuestion['options']) as $k => $v) {
-                                $optionId = strtolower(Translit::translit($v, true, 'ru-en'));
+                                $optionId = strtolower(Inflector::slug($v, true, 'ru-en'));
                                 $question->options[$optionId] = $v;
                             }
 
@@ -294,82 +290,6 @@ class Quiz extends ActiveRecord
         }
 
         $this->save();
-    }
-
-    /**
-     * Возвращает значения по-умолчанию для полей регистрации на мероприятие
-     *
-     * @param string $name
-     *
-     * @return string|null
-     */
-    public static function getEventRegistrationFieldDefaultValue($name)
-    {
-        /* @var User $user */
-        $user = Yii::$app->user->identity;
-
-        if ($user === null) {
-            return '';
-        }
-
-        switch ($name) {
-            case 'email':
-                $value = $user->email;
-                break;
-            case 'first_name':
-                $value = $user->first_name;
-                break;
-            case 'last_name':
-                $value = $user->last_name;
-                break;
-            case 'father_name':
-                $value = $user->father_name;
-                break;
-            case 'phone':
-                $value = $user->phone;
-                break;
-            case 'company':
-                $value = $user->primaryEmployment && $user->primaryEmployment->organisation ? $user->primaryEmployment->organisation->name_short : null;
-                break;
-            case 'position':
-                $value = $user->primaryEmployment ? $user->primaryEmployment->position : null;
-                break;
-            case 'age':
-                $value = $user->getCurrentAge() ?: null;
-                break;
-            case 'birthday':
-                $value = $user->birthday ? date('d.m.Y', strtotime($user->birthday)) : null;
-                break;
-            case 'gender':
-                $value = $user->gender;
-                $genderList = UserGenderEnum::$list;
-                array_shift($genderList);
-                $value = $genderList[$value] ?? null;
-                break;
-            case 'academic_degree':
-                $value = !empty($user->degrees) ? $user->degrees[0]->name : null;
-                break;
-            case 'interest':
-                $value = !empty($user->interests) ? $user->interests[0]->classifierItem->title : null;
-                break;
-            case 'smu':
-                $smuValue = [];
-
-                foreach ($user->smuMember as $smu) {
-                    $smuValue[] = $smu->smu->title;
-                }
-
-                if (empty($smuValue)) {
-                    $smuValue = ['Нет'];
-                }
-
-                $value = implode(', ', $smuValue);
-                break;
-            default:
-                $value = null;
-        }
-
-        return $value;
     }
 
     /**

@@ -11,12 +11,22 @@
         }
     ],
     "require": {
-        "php": ">=7.2.0",
-        "yiisoft/yii2": "~2.0.0"
+        "yiisoft/yii2": "^2.0.0"
     },
     "autoload": {
         "psr-4": {
             "fgh151\\quiz\\": ""
+        }
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    ],
+    "config": {
+        "allow-plugins": {
+            "yiisoft/yii2-composer": true
         }
     }
 }

@@ -8,12 +8,11 @@
 
 namespace fgh151\quiz\models;
 
-use app\common\components\helpers\HelpersGlobals;
-use app\common\models\user\User;
 use Yii;
 use yii\base\DynamicModel as BaseDynamicModel;
 use yii\base\Exception;
 use yii\helpers\FileHelper;
+use yii\web\IdentityInterface;
 use yii\web\UploadedFile;
 
 /**
@@ -111,15 +110,15 @@ class DynamicModel extends BaseDynamicModel
     /**
      * Сохранение результатов заполнения формы
      *
-     * @param User|null $user
+     * @param IdentityInterface|null $user
      * @param array $params
      *
      * @return QuizResult|null|static
      * @throws Exception
      */
-    public function save(?User $user = null, $params = [])
+    public function save(?IdentityInterface $user = null, $params = [])
     {
-        $userId = $user !== null ? $user->id : Yii::$app->getUser()->getId();
+        $userId = $user !== null ? $user->getId() : Yii::$app->getUser()->getId();
         $model = QuizResult::findOne(['quiz_id' => $this->quiz_id, 'user_id' => $userId]) ?? new QuizResult(['quiz_id' => $this->quiz_id, 'user_id' => $userId]);
         $fieldTypes = $this->fieldTypes();
 
@@ -135,7 +134,7 @@ class DynamicModel extends BaseDynamicModel
                 if (empty($params['keepFiles'])) {
                     if ($v instanceof UploadedFile) {
                         // Сохранение нового файла
-                        $fileName = HelpersGlobals::uniqidStr() . '.' . $v->extension;
+                        $fileName = Yii::$app->getSecurity()->generateRandomKey() . '.' . $v->extension;
                         $v->saveAs($directory . '/' . $fileName);
 
                         if (!empty($model->questions[$k]) && is_file($filePath = $directory . '/' . $model->questions[$k]['fileName'])) {
