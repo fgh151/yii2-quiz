@@ -134,8 +134,8 @@ class DynamicModel extends BaseDynamicModel
                 if (empty($params['keepFiles'])) {
                     if ($v instanceof UploadedFile) {
                         // Сохранение нового файла
-                        $fileName = Yii::$app->getSecurity()->generateRandomKey() . '.' . $v->extension;
-                        $v->saveAs($directory . '/' . $fileName);
+                        $fileName = Yii::$app->getSecurity()->generateRandomString() . '.' . $v->extension;
+                        $v->saveAs($directory . $fileName);
 
                         if (!empty($model->questions[$k]) && is_file($filePath = $directory . '/' . $model->questions[$k]['fileName'])) {
                             $oldFilePaths[] = $filePath;
