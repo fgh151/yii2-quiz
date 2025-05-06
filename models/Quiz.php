@@ -250,7 +250,10 @@ class Quiz extends ActiveRecord
                 $question->validators = [];
 
                 switch ($formQuestion['type']) {
+                    case QuizQuestion::TYPE_CHECKBOX:
+                    case QuizQuestion::TYPE_CHECKBOX_LIST:
                     case QuizQuestion::TYPE_RADIO:
+                    case QuizQuestion::TYPE_RADIO_OTHER:
                         $question->options = [];
 
                         if (false === empty($formQuestion['options'])) {
