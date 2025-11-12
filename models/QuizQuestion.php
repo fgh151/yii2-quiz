@@ -25,6 +25,8 @@ class QuizQuestion extends QuizConsistent
     public const TYPE_LABEL = 'label';
     public const TYPE_NUMBER = 'number';
 
+    public const TYPE_TEXTAREA = 'textarea';
+
     /**
      * Имя поля. Попадет в аттрибут name
      *
@@ -91,6 +93,7 @@ class QuizQuestion extends QuizConsistent
             self::TYPE_RADIO => 'Радиокнопки',
             self::TYPE_RADIO_OTHER => 'Радиокнопки + другое',
             self::TYPE_LABEL => 'Разделитель',
+            self::TYPE_TEXTAREA => 'Большое текстовое поле',
         ];
     }
 }

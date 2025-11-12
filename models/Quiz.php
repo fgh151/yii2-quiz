@@ -99,6 +99,7 @@ class Quiz extends ActiveRecord
 
                 // Дополнительные опции для передаци в генератор поля
                 switch ($questionData['type']) {
+                    case QuizQuestion::TYPE_TEXTAREA:
                     case QuizQuestion::TYPE_TEXT:
                         $this->questions->defineAttributeParam($questionData['field'], [
                             'userInfoType' => $questionData['userInfoType'] ?? '',
